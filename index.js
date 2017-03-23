@@ -3,7 +3,7 @@ var loaderUtils = require('loader-utils');
 
 function processOptions(source, options) {
   if (!_.isUndefined(options.search) && !_.isUndefined(options.replace)) {
-    if (!_.isUndefined(options.flags)) {
+    if (!_.isUndefined(options.flags) && !_.isRegExp(query.search)) {
       options.search = new RegExp(options.search, options.flags);
     }
 
@@ -13,8 +13,9 @@ function processOptions(source, options) {
   return source;
 }
 
-module.exports = function (source) {
+module.exports = function (source, map) {
   this.cacheable();
+  this.async();
 
   var options = loaderUtils.getOptions(this);
 
@@ -26,5 +27,5 @@ module.exports = function (source) {
     source = processOptions(source, options);
   }
 
-  return source;
+  this.callback(source, map);
 };
